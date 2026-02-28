@@ -10,16 +10,16 @@ async function googleRegister(req,res) {
                 message:"email is required"
             })
         }
-        let userExists=await userModel.findOne({
+        let user=await userModel.findOne({
             email
         })
-        if(!userExists)
+        if(!user)
         {
-           userExists=await userModel.create({
+           user=await userModel.create({
             name,email,avatar
            })
         }
-      const token = await jwt.sign({id:userExists._id},process.env.JWT_SECRET,{expiresIn:"7d"})
+      const token = await jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:"7d"})
       res.cookie("token",token,{
         httpOnly:true,
         secure:false,
@@ -28,12 +28,10 @@ async function googleRegister(req,res) {
       })
       return res.status(201).json({
         message:"user register succesfully",
-        user:{
-        id: userExists._id,
-        name: userExists.name,
-        email: userExists.email,
-        avatar: userExists.avatar
-        }
+        id: user._id,
+      name: user.name,
+      email: user.email,
+      avatar: user.avatar,
         
       })
     } catch (error) {

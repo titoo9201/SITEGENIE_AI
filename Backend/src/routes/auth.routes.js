@@ -5,7 +5,7 @@ const authRoute=express.Router()
 // /api/auth/register
 authRoute.post("/register",authController.googleRegister)
 // /api/auth/logout
-authRoute.get("logout",authController.googleLogout)
+authRoute.get("/logout",authController.googleLogout)
 
 
 
