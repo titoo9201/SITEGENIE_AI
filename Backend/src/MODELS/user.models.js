@@ -3,6 +3,7 @@ const userSchema= new mongoose.Schema({
     name:{
         type:String,
         required:true,
+
      
     },
     email:{
@@ -10,15 +11,21 @@ const userSchema= new mongoose.Schema({
         required:true,
         unique:true,
     },
-    credit:{
+    avatar:{
+        type:String,
+
+    },
+    credits:{
         type:Number,
-        default:50,
+        default:200,
         min:0
     },
-    iscreditAvailable:{
-        type:Boolean,
-         default:true,
+    plan:{
+        type:String,
+        enum:["free","pro","enterprise"],
+        default:"free"
     },
+
 
 
 
@@ -28,4 +35,7 @@ const userSchema= new mongoose.Schema({
 )
 
 
-const userModel=mongoose.model("user",userSchema)
+const userModel=mongoose.model("users",userSchema)
+
+
+module.exports=userModel
