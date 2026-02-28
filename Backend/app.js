@@ -1,5 +1,6 @@
 const express = require("express")
 const authRoutes=require("./src/routes/auth.routes")
+const userRoutes=require("./src/routes/user.routes")
 const cors =require("cors")
 const cookieParser = require("cookie-parser")
 const app = express()
@@ -11,6 +12,7 @@ app.use(cors({
     
 }))
 app.use("/api/auth",authRoutes)
+app.use("api/user",userRoutes)
 app.get("/",(req,res)=>{
     res.status(200).json({
         message:"server checking "
