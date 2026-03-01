@@ -6,6 +6,7 @@ import { Coins } from "lucide-react";
 import axios from "axios";
 import { serverUrl } from "../App";
 import { setUserData } from "../Redux/userSlice";
+import { useNavigate } from "react-router-dom";
 function Home() {
   const highlights = [
     "AI GENERATED CODE",
@@ -16,6 +17,7 @@ function Home() {
   const { userData } = useSelector((state) => state.user);
   const [openprofile, setopenprofile] = useState(false);
   const dispatch = useDispatch()
+  const navigate=useNavigate()
   const logout=async ()=>{
     try {
       await axios.get(`${serverUrl}/api/auth/logout`,{withCredentials:true})
@@ -99,7 +101,7 @@ function Home() {
                           <span> {userData.credits}</span>
                           <span className="font-semibold"> +</span>
                         </button>
-                        <button className="w-full px-4 py-3 text-left text-sm hover:bg-white/5 cursor-pointer">Dashboard</button>
+                        <button className="w-full px-4 py-3 text-left text-sm hover:bg-white/5 cursor-pointer"onClick={()=>navigate("/dashboard")} >Dashboard</button>
                         <button className="w-full px-4 py-3 text-left text-sm  text-red-400 hover:bg-white/5 cursor-pointer" onClick={logout}>Log Out</button>
                       </motion.div>
                     </>
@@ -140,9 +142,9 @@ function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
           className="px-10 mt-12 py-4 rounded-xl bg-white text-black font-semibold hover:scale-105 transition duration-300"
-          onClick={() => setopenLogin(true)}
+         onClick={()=>navigate("/dashboard")}
         >
-          Get Started
+          {userData?"Go To Dashboard":"Get Started"}
         </motion.button>
       </section>
 
