@@ -20,12 +20,13 @@ async function googleRegister(req,res) {
            })
         }
       const token = await jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:"7d"})
-      res.cookie("token",token,{
-        httpOnly:true,
-        secure:true,
-        sameSite:"none",
-        maxAge:7*24*60*60*1000
-      })
+res.cookie("token", token, {
+ httpOnly: true,
+ secure: true,
+ sameSite: "none",
+ maxAge: 7 * 24 * 60 * 60 * 1000,
+ path: "/"
+})
       return res.status(201).json({
         message:"user register succesfully",
         id: user._id,
@@ -47,14 +48,12 @@ async function googleRegister(req,res) {
 async function googleLogout(req,res)
 {
      try {
-         res.clearCookie("token",
-            {
-        httpOnly:true,
-        secure:true,
-        sameSite:"none",
-      
-            }
-        )
+res.clearCookie("token",{
+ httpOnly:true,
+ secure:true,
+ sameSite:"none",
+ path:"/"
+})
      return res.status(200).json({
         message:"user logout succesfull"
 
