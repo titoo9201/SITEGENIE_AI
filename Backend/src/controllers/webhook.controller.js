@@ -23,9 +23,9 @@ async function stripeWebhook(req,res) {
         const plan=session.metadata.plan
 
            await userModel.findByIdAndUpdate(userId,{
-            $inc:{credits},
-            plan
-           })
+ $inc:{credits:credits},
+ $set:{plan:plan}
+})
     }
     return res.status(200).json({       
         message:"webhook received"
