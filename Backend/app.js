@@ -11,9 +11,9 @@ app.post("/api/stripe/webhook",express.raw({type:"application/json"}),stripeWebh
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin:"https://sitegenie-ai-1.onrender.com",
-    credentials:true,
-    
+ origin:"https://sitegenie-ai-1.onrender.com",
+ credentials:true,
+ methods:["GET","POST","PUT","DELETE","OPTIONS"]
 }))
 app.use("/api/auth",authRoutes)
 app.use("/api/user",userRoutes)
