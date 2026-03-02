@@ -7,6 +7,7 @@ const { stripeWebhook } = require("./src/controllers/webhook.controller");
 const cors =require("cors")
 const cookieParser = require("cookie-parser")
 const app = express()
+app.set("trust proxy", 1);
 app.post("/api/stripe/webhook",express.raw({type:"application/json"}),stripeWebhook)
 app.use(express.json())
 app.use(cookieParser())
