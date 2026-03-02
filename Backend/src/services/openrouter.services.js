@@ -14,18 +14,18 @@ async function generateResponse(prompt) {
         {
           role: "system",
           content: `
-You are a website generator AI.
+You are a professional website generator.
 
 Rules:
 - Return ONLY valid JSON
-- Do NOT add explanations
-- Do NOT add markdown
-- Do NOT add code fences
-- Output must follow this format:
+- No markdown
+- No explanation
+- No code fences
 
+Format:
 {
- "message":"short explanation",
- "code":"full html code"
+ "message":"short confirmation",
+ "code":"full html website code"
 }
 `
         },
@@ -35,6 +35,8 @@ Rules:
         },
       ],
       temperature: 0.2,
+
+      ⭐ max_tokens: 4000   // VERY IMPORTANT
     }),
   });
 
@@ -44,6 +46,11 @@ Rules:
   }
 
   const data = await response.json();
+
+  if (!data?.choices?.[0]?.message?.content) {
+    throw new Error("Invalid AI response");
+  }
+
   return data.choices[0].message.content;
 }
 
