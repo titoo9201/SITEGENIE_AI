@@ -66,6 +66,7 @@ websiteSchema.pre("save", async function () {
   if (!this.slug) {
     this.slug = nanoid(8);
   }
+
 });
 
 /* ===========================

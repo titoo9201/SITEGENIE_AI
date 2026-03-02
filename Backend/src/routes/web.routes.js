@@ -7,5 +7,8 @@ webRouter.post("/gen",authMiddleware.authMiddleware,webController.generateWebsit
 webRouter.post("/update/:id",authMiddleware.authMiddleware,webController.codeChanges)
 webRouter.get("/get/:id",authMiddleware.authMiddleware,webController.getWebsite)
 webRouter.get("/get-all",authMiddleware.authMiddleware,webController.allWebsite)
+webRouter.get("/deploy/:id",authMiddleware.authMiddleware,webController.deployWebsite)
+webRouter.get("/get-by-slug/:slug",webController.findBySlug)
+
 
 module.exports=webRouter

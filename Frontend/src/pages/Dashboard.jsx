@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ArrowLeft, Rocket, Share2 } from "lucide-react";
+import { ArrowLeft, Check, Rocket, Share2 } from "lucide-react";
 import { motion } from "motion/react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,26 @@ function Dashboard() {
   const [website, setwebsite] = useState([]);
   const [loading, setloading] = useState(false);
   const [error, seterror] = useState("");
+  const [copiedId, setcopiedId] = useState(null);
+  
+  const handledeploy = async (id) => {
+    try {
+      const result = await axios.get(`${serverUrl}/api/web/deploy/${id}`, {
+        withCredentials: true,
+      });
+      window.open(`${result.data.url}`, "_blank");
+     
+setwebsite((prev) =>
+  prev.map((w) =>
+    w._id === id
+      ? { ...w, deployed: true, deployurl: result.data.url }
+      : w
+  )
+)
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const navigate = useNavigate();
   useEffect(() => {
     const handleAllWebsite = async () => {
@@ -28,6 +48,13 @@ function Dashboard() {
     };
     handleAllWebsite();
   }, []);
+  const handlecopy = async (site) => {
+    await navigator.clipboard.writeText(site.deployurl);
+ 
+    
+    setcopiedId(site._id);
+    setTimeout(() => setcopiedId(null), 2000);
+  };
   return (
     <div className="min-h-screen bg-[#040404] text-white">
       {/* Navbar */}
@@ -79,46 +106,78 @@ function Dashboard() {
         )}
         {!loading && !error && website?.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 ">
-            {website.map((w, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                whileHover={{ y: -6 }}
-                className="rounded-2xl bg-white/5 border border-white/10 
+            {website.map((w, i) => {
+              const copy = copiedId === w._id;
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  whileHover={{ y: -6 }}
+                  onClick={()=>navigate(`/editor/${w._id}`)}
+                  className="rounded-2xl bg-white/5 border border-white/10 
                overflow-hidden hover:bg-white/10 transition flex flex-col"
-              >
-                <div className="relative h-40 bg-black cursor-pointer">
-                  <iframe
-                    srcDoc={w.code}
-                    className="absolute inset-0 w-[140%] h-[140%] scale-[0.72] origin-top-left pointer-events-none bg-white"
-                  />
-                  <div className="absolute inset-0 bg-black/30" />
-                </div>
-                <div className="p-5 flex flex-col gap-4 flex-1">
-                  <h3 className="text-base font-semibold line-clamp-2">
-                    {w.title}
-                  </h3>
-                  <p className="text-xs text-zinc-400">
-                    Last Updated {""}
-                    {new Date(w.updatedAt).toLocaleDateString()}
-                  </p>
-                  {!w.deployed?(
-                <button className="
+                >
+                  <div className="relative h-40 bg-black cursor-pointer">
+                    <iframe
+                      srcDoc={w.code}
+                      className="absolute inset-0 w-[140%] h-[140%] scale-[0.72] origin-top-left pointer-events-none bg-white"
+                    />
+                    <div className="absolute inset-0 bg-black/30" />
+                  </div>
+                  <div className="p-5 flex flex-col gap-4 flex-1">
+                    <h3 className="text-base font-semibold line-clamp-2">
+                      {w.title}
+                    </h3>
+                    <p className="text-xs text-zinc-400">
+                      Last Updated {""}
+                      {new Date(w.updatedAt).toLocaleDateString()}
+                    </p>
+                    {!w.deployed ? (
+                      <button
+                        className="
   mt-auto flex items-center justify-center gap-2
   px-4 py-2 rounded-xl text-sm font-semibold
   bg-gradient-to-r from-indigo-500 to-purple-500
   hover:scale-105 transition
-">
-  <Rocket size={18}/> Deploy
-</button>
-                ) :(<button>
-                  <Share2/> Share Link
-                  </button>)}
-                </div>
-              </motion.div>
-            ))}
+  
+"
+                        onClick={() => handledeploy(w._id)}
+                      >
+                        <Rocket size={18} /> Deploy
+                      </button>
+                    ) : (
+                      <motion.button
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => handlecopy(w)}
+                        className={`mt-auto flex items-center justify-center gap-2
+    px-4 py-2 rounded-xl text-sm font-medium
+    transition-all border
+    ${
+      copy
+        ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+        : "bg-white/10 hover:bg-white/20 border-white/10"
+    }`}
+                      >
+                       {copy?(
+                        <>
+                           <Check size={14}/>
+                        Link copied
+                        </>
+                     
+                       ):
+                       <>
+                       <Share2 size={14}/>
+                       Share Link
+                       </>
+                       }
+                      </motion.button>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </div>

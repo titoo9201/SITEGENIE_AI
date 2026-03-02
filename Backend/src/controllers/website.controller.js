@@ -197,9 +197,60 @@ return res.status(500).json({
 
 }
 
+async function deployWebsite(req, res) {
+  try {
+    const website = await websiteModel.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    });
+
+    if (!website) {
+      return res.status(400).json({
+        message: "website not found",
+      });
+    }
+
+    website.deployed = true;
+    website.deployurl = `${process.env.FRONTEND_URL}/site/${website.slug}`;
+
+    await website.save();
+
+    return res.status(200).json({
+      url: website.deployurl,
+    });
+
+  } catch (error) {
+    console.log("deploy error", error);
+    return res.status(500).json({
+      message: "internal server error",
+    });
+  }
+}
+
+async function findBySlug(req,res) {
+  try {
+    const website = await websiteModel.findOne({
+      slug: req.params.slug,
+      deployed: true
+    });
+
+    if (!website) {
+      return res.status(404).json({ message: "site not found" });
+    }
+
+    return res.status(200).json({
+      code: website.code
+    });
+
+  } catch (error) {
+    return res.status(500).json({ message: "internal server error" });
+  }  
+}
 module.exports = {
   generateWebsite,
   getWebsite,
   codeChanges,
-  allWebsite
+  allWebsite,
+  deployWebsite,
+  findBySlug
 };

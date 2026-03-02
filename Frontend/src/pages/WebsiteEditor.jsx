@@ -76,6 +76,19 @@ useEffect(() => {
     };
     handleGetWebsite();
   }, [id]);
+const handledeploy = async () => {
+    try {
+      const result = await axios.get(`${serverUrl}/api/web/deploy/${website._id}`, {
+        withCredentials: true,
+      });
+      window.open(`${result.data.url}`, "_blank");
+     
+
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     if (!code || !iframeRef.current) return;
 
@@ -155,10 +168,15 @@ useEffect(() => {
           <span className="text-xs text-zinc-400">Live Preview</span>
           <div className="flex items-center gap-3">
             {/* Deploy Button */}
-            <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 active:scale-95 transition-all duration-200 shadow-lg shadow-emerald-500/20">
+            {website.deployed?"":
+             <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 active:scale-95 transition-all duration-200 shadow-lg shadow-emerald-500/20"
+            onClick={handledeploy}
+            >
               <Rocket size={18} />
               <span className="text-sm font-medium">Deploy</span>
             </button>
+            }
+           
             <button className="p-2 lg:hidden rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-200 active:scale-95"
             onClick={()=>setshowChat(true)}
             >
@@ -185,7 +203,7 @@ useEffect(() => {
         <iframe
           ref={iframeRef}
           className="flex-1 w-full  bg-white"
-          sandbox="allow-scripts"
+      sandbox='allow-scripts allow-same-origin allow-forms'
         />
       </div>
       <AnimatePresence>
@@ -236,7 +254,7 @@ useEffect(() => {
             <iframe
               className="flex-1 w-full bg-white"
               srcDoc={code}
-              sandbox="allow-scripts"
+              sandbox='allow-scripts allow-same-origin allow-forms'
             />
           </motion.div>
         )}
