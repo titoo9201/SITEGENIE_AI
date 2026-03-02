@@ -27,23 +27,28 @@ async function generateWebsite(req, res) {
     const finalPrompt = masterPrompt.replace("USER_PROMPT", prompt);
     let raw = "";
     let parsed = null;
-    for (let i = 0; i < 2 && !parsed; i++) {
-      raw = await generateResponse(finalPrompt);
-      parsed = await extractData(raw);
-      if (!parsed) {
-        raw = await generateResponse(
-          finalPrompt +
-            "\n\n Remember to follow the output format and return only raw json",
-        );
-        parsed = await extractData(raw);
-      }
-    }
-    if (!parsed || !parsed.code) {
-      console.log("ai returned invalid response");
-      return res.status(500).json({
-        message: "ai returned invalid response",
-      });
-    }
+for (let i = 0; i < 3; i++) {
+  raw = await generateResponse(finalPrompt);
+  parsed = await extractData(raw);
+
+  if (parsed && parsed.code) break;
+
+  raw = await generateResponse(
+    finalPrompt +
+      "\nReturn only valid JSON in format {\"message\":\"\",\"code\":\"\"}"
+  );
+
+  parsed = await extractData(raw);
+}
+if (!parsed || !parsed.code) {
+ console.log("AI response failed", raw);
+
+ return res.status(200).json({
+  message: "AI could not generate perfect website. Please try again.",
+  websiteId: null,
+  remaingCredits: user.credits
+ });
+}
     const website = await websiteModel.create({
       user: user._id,
       title: prompt.slice(0, 60),
