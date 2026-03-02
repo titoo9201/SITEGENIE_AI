@@ -1,7 +1,10 @@
 import { ArrowLeft, Check, Coins } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { serverUrl } from "../App";
 const plans = [
   {
     key: "free",
@@ -53,6 +56,29 @@ const plans = [
 ];
 function Pricing() {
   const navigate = useNavigate();
+  const {userData}=useSelector(state=>state.user)
+  const [loading, setloading] = useState(null)
+  
+  const handleBill = async (planKey)=>{
+    if(!userData){
+      navigate("/")
+      return 
+    }
+    if(planKey=="free"){
+      navigate("/dashboard")
+      return
+    }
+    setloading(planKey)
+    try {
+      const result = await axios.post(`${serverUrl}/api/bill`,{planType:planKey},{withCredentials:true})
+  window.location.href = result.data.sessionUrl;
+      setloading(planKey)
+    } catch (error) {
+      console.log(error);
+      setloading(false)
+      
+    }
+  }
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#050505] text-white px-6 pt-16 pb-24">
       <div className="absolute inset-0 pointer-events-none">
@@ -124,14 +150,19 @@ function Pricing() {
             </ul>
             <motion.button
               whileTap={{ scale: 0.96 }}
+              disabled={loading}
+              onClick={()=>handleBill(p.key)}
               className={`w-full py-3 rounded-xl font-semibold transition
+
     ${
       p.popular
         ? "bg-indigo-500 hover:bg-indigo-600"
         : "bg-white/10 hover:bg-white/20"
     } disabled:opacity-60`}
             >
-              {p.button}
+              
+             {loading === p.key ? "Redirecting..." : p.button}
+          
             </motion.button>
           </motion.div>
         ))}

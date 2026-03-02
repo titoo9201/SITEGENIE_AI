@@ -1,0 +1,58 @@
+const {PLANS:plans}=require("../services/plan.services")
+const {stripe}=require("../services/stripe.services")    
+
+
+async function billing(req,res) {
+    try {
+        const{planType}=req.body
+        const userId=req.user._id
+        const plan=plans[planType]
+        if(!plan|| plan.price==0)
+        {
+            return res.status(400).json({
+                message:"free plan not a paid plan "
+            })
+        }  
+      const session = await stripe.checkout.sessions.create({
+        mode:"payment",
+        payment_method_types:["card"],
+        line_items:[
+            {
+                price_data:{
+                    currency:"INR",
+                    product_data:{
+                        name:`SiteGenie.ai ${planType.toUpperCase()} plan`
+                    },
+                    unit_amount:plan.price*100
+                },
+                quantity:1
+            }
+        ],
+        metadata:{
+            userId:userId.toString(),
+            credits:plan.credits,
+            plan:plan.plan
+        },
+        success_url:`${process.env.FRONTEND_URL}/`,
+        cancel_url:`${process.env.FRONTEND_URL}/pricing`
+
+
+      })
+      return res.status(200).json({
+        sessionUrl:session.url 
+      })
+
+    } catch (error) {
+       console.log(error);
+       
+       return res.status(500).json({
+        message:"internal server error"
+       })
+    }
+}
+
+
+
+module.exports={
+    billing
+}

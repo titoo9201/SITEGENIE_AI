@@ -8,6 +8,8 @@ import { useSelector } from 'react-redux';
 import WebsiteEditor from './pages/WebsiteEditor';
 import Livesite from './pages/Livesite';
 import Pricing from './pages/Pricing';
+import About from './pages/About';
+import Contact from './pages/Contact';
 export const serverUrl="http://localhost:3000"
 function App() {
 useGetCurrentUser()
@@ -21,6 +23,8 @@ const {userData}=useSelector(state=>state.user)
   <Route path='/editor/:id' element={ userData?<WebsiteEditor/>:<Home/>}/>
   <Route path='/site/:id' element={<Livesite/>}/>
   <Route path='/pricing' element={<Pricing/>}/>
+  <Route path='/about' element={<About/>}/>
+  <Route path='/contact' element={<Contact/>}/>
 
  </Routes>
  </BrowserRouter>

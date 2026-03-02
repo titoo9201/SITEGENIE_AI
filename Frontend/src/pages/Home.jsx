@@ -190,83 +190,68 @@ function Home() {
       {/* footer */}
       {/* Footer */}
       <footer className="border-t border-white/10 bg-black/40 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-6 py-16">
-          {/* Top Footer Grid */}
-          <div className="grid md:grid-cols-4 gap-10">
-            {/* Brand */}
-            <div>
-              <h2 className="text-xl font-semibold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                SiteGenie.ai
-              </h2>
-              <p className="mt-4 text-sm text-zinc-400 leading-relaxed">
-                AI-powered website builder that transforms your ideas into
-                modern, responsive and production-ready websites.
-              </p>
-            </div>
+  <div className="max-w-7xl mx-auto px-6 py-12">
 
-            {/* Product */}
-            <div>
-              <h3 className="text-sm font-semibold mb-4 text-white">Product</h3>
-              <ul className="space-y-3 text-sm text-zinc-400">
-                <li className="hover:text-white cursor-pointer transition">
-                  Features
-                </li>
-                <li className="hover:text-white cursor-pointer transition">
-                  Pricing
-                </li>
-                <li className="hover:text-white cursor-pointer transition">
-                  Templates
-                </li>
-              </ul>
-            </div>
+    {/* Top Grid */}
+    <div className="grid md:grid-cols-3 gap-10">
 
-            {/* Company */}
-            <div>
-              <h3 className="text-sm font-semibold mb-4 text-white">Company</h3>
-              <ul className="space-y-3 text-sm text-zinc-400">
-                <li className="hover:text-white cursor-pointer transition">
-                  About
-                </li>
-                <li className="hover:text-white cursor-pointer transition">
-                  Careers
-                </li>
-                <li className="hover:text-white cursor-pointer transition">
-                  Contact
-                </li>
-              </ul>
-            </div>
+      {/* Brand */}
+      <div>
+        <h2 className="text-xl font-semibold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+          SiteGenie.ai
+        </h2>
+        <p className="mt-4 text-sm text-zinc-400 leading-relaxed">
+          AI-powered website builder for creating modern, responsive and production-ready websites.
+        </p>
+      </div>
 
-            {/* Newsletter */}
-            <div>
-              <h3 className="text-sm font-semibold mb-4 text-white">
-                Stay Updated
-              </h3>
-              <p className="text-sm text-zinc-400 mb-4">
-                Subscribe to get product updates and AI tips.
-              </p>
-            </div>
-          </div>
+      {/* Product */}
+      <div>
+        <h3 className="text-sm font-semibold mb-4 text-white">Product</h3>
+        <ul className="space-y-3 text-sm text-zinc-400">
+          <li className="hover:text-white cursor-pointer transition"
+          onClick={()=>navigate("/pricing")}>
+            Pricing
+          </li>
+        </ul>
+      </div>
 
-          {/* Bottom Footer */}
-          <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-sm text-zinc-500">
-            <p>
-              © {new Date().getFullYear()} SiteGenie.ai. All rights reserved.
-            </p>
+      {/* Company */}
+      <div>
+        <h3 className="text-sm font-semibold mb-4 text-white">Company</h3>
+        <ul className="space-y-3 text-sm text-zinc-400">
+          <li className="hover:text-white cursor-pointer transition"
+          
+          onClick={()=>navigate("/about")}>
+            About
+          </li>
+          <li className="hover:text-white cursor-pointer transition"
+          onClick={()=>navigate("/contact")}>
+            Contact
+          </li>
+        </ul>
+      </div>
 
-            <div className="flex gap-6 mt-4 md:mt-0">
-              <span className="hover:text-white cursor-pointer transition">
-                Privacy
-              </span>
-              <span className="hover:text-white cursor-pointer transition">
-                Terms
-              </span>
-              <span className="hover:text-white cursor-pointer transition">
-                Cookies
-              </span>
-            </div>
-          </div>
-        </div>
-      </footer>
+    </div>
+
+    {/* Bottom */}
+    <div className="mt-12 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-sm text-zinc-500">
+      <p>
+        © {new Date().getFullYear()} SiteGenie.ai. All rights reserved.
+      </p>
+
+      <div className="flex gap-6 mt-4 md:mt-0">
+        <span className="hover:text-white cursor-pointer transition">
+          Privacy Policy
+        </span>
+        <span className="hover:text-white cursor-pointer transition">
+          Terms
+        </span>
+      </div>
+    </div>
+
+  </div>
+</footer>
       {openLogin && (
         <Login open={openLogin} onclose={() => setopenLogin(false)} />
       )}
