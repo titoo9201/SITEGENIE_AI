@@ -4,7 +4,13 @@ const {stripe}=require("../services/stripe.services")
 
 async function billing(req,res) {
     try {
-        const{planType}=req.body
+        const {planType}=req.body
+if(!["free","student","pro"].includes(planType)){
+ return res.status(400).json({
+  message:"invalid plan"
+ })
+}
+        
         const userId=req.user._id
         const plan=plans[planType]
         if(!plan|| plan.price==0)
