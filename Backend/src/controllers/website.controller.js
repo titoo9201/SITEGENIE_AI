@@ -1,4 +1,4 @@
-const websiteModel = require("../models/website.model");
+const websiteModel = require("../MODELS/website.model");
 const userModel = require("../MODELS/user.models");
 const { masterPrompt } = require("../utils/prompt.utils");
 const { generateResponse } = require("../services/openrouter.services");

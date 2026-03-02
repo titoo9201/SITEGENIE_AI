@@ -16,7 +16,7 @@ useGetCurrentUser()
 const {userData}=useSelector(state=>state.user)
   return (  
  <BrowserRouter>
- <Routes>
+ <Routes> 
   <Route path='/' element={<Home/>}/>
   <Route path='/dashboard' element={ userData?<Dashboard/>:<Home/>}/>
   <Route path='/generate' element={ userData?<Generate/>:<Home/>}/>
