@@ -11,26 +11,41 @@ async function generateResponse(prompt) {
     body: JSON.stringify({
       model: model,
       messages: [
-        { role: "system", content: "You Must Return Only Valid raw JSON " },
+        {
+          role: "system",
+          content: `
+You are a website generator AI.
+
+Rules:
+- Return ONLY valid JSON
+- Do NOT add explanations
+- Do NOT add markdown
+- Do NOT add code fences
+- Output must follow this format:
+
+{
+ "message":"short explanation",
+ "code":"full html code"
+}
+`
+        },
         {
           role: "user",
           content: prompt,
         },
       ],
-      temperature:0.2
+      temperature: 0.2,
     }),
   });
 
-  if(!response.ok)
-  {
-    const err= await response.text()
-    throw new Error("open router error"+err)
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error("OpenRouter error " + err);
   }
-  const data= await response.json()
-  return data.choices[0].message.content
+
+  const data = await response.json();
+  return data.choices[0].message.content;
 }
-
-
 
 module.exports = {
   generateResponse,
