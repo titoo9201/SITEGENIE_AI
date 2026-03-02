@@ -10,7 +10,7 @@ import Livesite from './pages/Livesite';
 import Pricing from './pages/Pricing';
 import About from './pages/About';
 import Contact from './pages/Contact';
-export const serverUrl="http://localhost:3000"
+export const serverUrl="https://sitegenie-ai.onrender.com"
 function App() {
 useGetCurrentUser()
 const {userData}=useSelector(state=>state.user)
