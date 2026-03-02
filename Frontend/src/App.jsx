@@ -1,5 +1,7 @@
+import axios from "axios";
 import React from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+axios.defaults.withCredentials = true;
 import Home from "./pages/Home"
 import useGetCurrentUser from './hooks/useGetCurrentUser';
 import Dashboard from './pages/Dashboard';
