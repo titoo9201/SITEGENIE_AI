@@ -22,8 +22,8 @@ async function googleRegister(req,res) {
       const token = await jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:"7d"})
       res.cookie("token",token,{
         httpOnly:true,
-        secure:false,
-        sameSite:"strict",
+        secure:true,
+        sameSite:"none",
         maxAge:7*24*60*60*1000
       })
       return res.status(201).json({
@@ -50,8 +50,8 @@ async function googleLogout(req,res)
          res.clearCookie("token",
             {
         httpOnly:true,
-        secure:false,
-        sameSite:"strict",
+        secure:true,
+        sameSite:"none",
       
             }
         )
