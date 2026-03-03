@@ -16,17 +16,15 @@ async function generateResponse(prompt) {
           content: `
 You are a professional website generator.
 
-Rules:
-- Return ONLY valid JSON
-- No markdown
-- No explanation
-- No code fences
-
-Format:
+Return ONLY valid JSON in this format:
 {
  "message":"short confirmation",
  "code":"full html website code"
 }
+
+No markdown.
+No explanation.
+No code fences.
 `
         },
         {
@@ -34,9 +32,7 @@ Format:
           content: prompt,
         },
       ],
-      temperature: 0.2,
-
-   max_tokens: 4000, // Very important for cost control
+      temperature: 0.2
     }),
   });
 
