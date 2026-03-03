@@ -7,6 +7,13 @@ import { Code2, MessageSquare, Monitor, Rocket, Send, X } from "lucide-react";
 import { useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Editor from "@monaco-editor/react";
+const formatHTML = (html = "") => {
+  return html
+    .replace(/></g, ">\n<")
+    .replace(/</g, "\n<")
+    .replace(/>/g, ">\n")
+    .replace(/\n\s*\n/g, "\n");
+};
 function WebsiteEditor() {
   const { id } = useParams();
   const [website, setwebsite] = useState(null);
@@ -47,7 +54,7 @@ useEffect(() => {
       console.log(result);
       setloading(false);
       setmessage((m) => [...m, { role: "ai", content: result.data.message }]);
-      setcode(result.data.code);
+setcode(formatHTML(result.data.code));
     } catch (error) {
       setloading(false);
       console.log(error);
@@ -67,7 +74,7 @@ useEffect(() => {
           withCredentials: true,
         });
         setwebsite(result.data.website);
-        setcode(result.data.website.code);
+setcode(formatHTML(result.data.website.code));
         setmessage(result.data.website.conversation);
       } catch (error) {
         console.log(error);
@@ -220,12 +227,17 @@ const handledeploy = async () => {
                 <X size={18} />
               </button>
             </div>
-            <Editor
-              theme="vs-dark"
-              value={code}
-              language="html"
-              onChange={(c) => setcode(c)}
-            />
+      <Editor
+ theme="vs-dark"
+ value={code}
+ language="html"
+ onChange={(c) => setcode(c)}
+ options={{
+   wordWrap: "on",
+   automaticLayout: true,
+   fontSize: 14
+ }}
+/>
           </motion.div>
         )}
       </AnimatePresence>
