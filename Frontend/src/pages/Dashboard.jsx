@@ -115,7 +115,10 @@ setwebsite((prev) =>
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                   whileHover={{ y: -6 }}
-                  onClick={()=>navigate(`/editor/${w._id}`)}
+                onClick={(e)=>{
+ e.stopPropagation();
+ navigate(`/editor/${w._id}`);
+}}
                   className="rounded-2xl bg-white/5 border border-white/10 
                overflow-hidden hover:bg-white/10 transition flex flex-col"
                 >
@@ -143,14 +146,20 @@ setwebsite((prev) =>
   hover:scale-105 transition
   
 "
-                        onClick={() => handledeploy(w._id)}
+                       onClick={(e) => {
+  e.stopPropagation();
+  handledeploy(w._id);
+}}
                       >
                         <Rocket size={18} /> Deploy
                       </button>
                     ) : (
                       <motion.button
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => handlecopy(w)}
+onClick={(e) => {
+  e.stopPropagation();
+  handlecopy(w);
+}}
                         className={`mt-auto flex items-center justify-center gap-2
     px-4 py-2 rounded-xl text-sm font-medium
     transition-all border
