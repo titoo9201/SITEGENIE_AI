@@ -8,11 +8,15 @@ import { useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Editor from "@monaco-editor/react";
 const formatHTML = (html = "") => {
-  return html
-    .replace(/></g, ">\n<")
-    .replace(/</g, "\n<")
-    .replace(/>/g, ">\n")
-    .replace(/\n\s*\n/g, "\n");
+  try {
+    return html
+      .replace(/></g, ">\n<")
+      .replace(/(<\/(head|body|html)>)/g, "$1\n")
+      .replace(/(<(head|body|html)[^>]*>)/g, "\n$1\n")
+      .replace(/\n\s*\n/g, "\n");
+  } catch {
+    return html;
+  }
 };
 function WebsiteEditor() {
   const { id } = useParams();
