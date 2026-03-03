@@ -1,29 +1,35 @@
 
 async function extractJson(rawResponse) {
  try {
-  if(!rawResponse) return null
+  if (!rawResponse) return null;
 
-  // Remove markdown fences
+  // Remove markdown json fences
   let cleanText = rawResponse
-   .replace(/```json/g,"")
-   .replace(/```/g,"")
-   .trim()
+   .replace(/```json/g, "")
+   .replace(/```/g, "")
+   .trim();
 
-  // Find JSON start-end
-  const start = cleanText.indexOf("{")
-  const end = cleanText.lastIndexOf("}")
+  // Find JSON block
+  const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
 
-  if(start === -1 || end === -1) return null
+  if (!jsonMatch) return null;
 
-  const jsonString = cleanText.substring(start, end + 1)
+  let jsonString = jsonMatch[0];
 
-  return JSON.parse(jsonString)
+  // Extra safety sanitization
+  jsonString = jsonString
+   .replace(/,\s*}/g, "}")
+   .replace(/,\s*]/g, "]");
 
- } catch(error){
-  console.log("json parsing error", error.message)
-  return null
+  return JSON.parse(jsonString);
+
+ } catch (error) {
+  console.log("json parsing error:", error.message);
+  return null;
  }
 }
+
+module.exports = { extractJson };
 
 module.exports={
     extractJson
