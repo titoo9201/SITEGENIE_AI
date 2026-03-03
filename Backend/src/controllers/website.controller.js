@@ -3,79 +3,83 @@ const userModel = require("../MODELS/user.models");
 const { masterPrompt } = require("../utils/prompt.utils");
 const { generateResponse } = require("../services/openrouter.services");
 const { extractJson: extractData } = require("../utils/extractjson.utils");
+const { formatHTML } = require("../utils/htmlFormat.utils");
 
 async function generateWebsite(req, res) {
   try {
     const { prompt } = req.body;
+
     if (!prompt) {
-      return res.status(400).json({
-        message: "prompt is required ",
-      });
+      return res.status(400).json({ message: "prompt is required" });
     }
+
     const user = await userModel.findById(req.user._id);
     if (!user) {
-      return res.status(400).json({
-        message: "user not found ",
-      });
-    }
-    if (user.credits < 40) {
-      return res.status(403).json({
-        message: "not enough credits",
-      });
+      return res.status(400).json({ message: "user not found" });
     }
 
-    const finalPrompt = masterPrompt.replace("USER_PROMPT", prompt);
+    if (user.credits < 40) {
+      return res.status(403).json({ message: "not enough credits" });
+    }
+
+    const finalPrompt = `
+You are a professional web developer AI.
+
+User Request:
+${prompt}
+
+Return JSON only:
+{
+ "message":"",
+ "code":"FULL HTML WEBSITE"
+}
+
+Important:
+- Return complete website code
+- Make responsive design
+- Do not explain anything
+`;
+
     let raw = "";
     let parsed = null;
-for (let i = 0; i < 3; i++) {
-  raw = await generateResponse(finalPrompt);
-  parsed = await extractData(raw);
 
-  if (parsed && parsed.code) break;
+    for (let i = 0; i < 3; i++) {
+      raw = await generateResponse(finalPrompt);
+      parsed = await extractData(raw);
 
-  raw = await generateResponse(
-    finalPrompt +
-      "\nReturn only valid JSON in format {\"message\":\"\",\"code\":\"\"}"
-  );
+      if (parsed && parsed.code) break;
+    }
 
-  parsed = await extractData(raw);
-}
-if (!parsed || !parsed.code) {
- console.log("AI response failed", raw);
+    if (!parsed || !parsed.code) {
+      return res.status(200).json({
+        message: "AI could not generate website",
+        websiteId: null,
+        remaingCredits: user.credits,
+      });
+    }
 
- return res.status(200).json({
-  message: "AI could not generate perfect website. Please try again.",
-  websiteId: null,
-  remaingCredits: user.credits
- });
-}
     const website = await websiteModel.create({
       user: user._id,
       title: prompt.slice(0, 60),
-      code: parsed.code,
+      code: formatHTML(parsed.code), // ⭐ IMPORTANT
       conversation: [
-        {
-          role: "user",
-          content: prompt,
-        },
-        {
-          role: "ai",
-          content: parsed.message,
-        },
+        { role: "user", content: prompt },
+        { role: "ai", content: parsed.message },
       ],
     });
-    user.credits = user.credits - 40;
+
+    user.credits -= 40;
     await user.save();
+
     return res.status(201).json({
       message: "website generated successfully",
       websiteId: website._id,
       remaingCredits: user.credits,
     });
+
   } catch (error) {
-    console.log("generate website error", error);
-    return res.status(500).json({
-      message: "something went wrong",
-    });
+    console.log(error);
+    return res.status(500).json({ message: "server error" });
   }
 }
 
