@@ -3,7 +3,7 @@ const userModel = require("../MODELS/user.models");
 const { masterPrompt } = require("../utils/prompt.utils");
 const { generateResponse } = require("../services/openrouter.services");
 const { extractJson: extractData } = require("../utils/extractjson.utils");
-const { formatHTML } = require("../utils/htmlFormat.utils");
+const { formatHTML } = require("../utils/htmlFormat.util");
 
 async function generateWebsite(req, res) {
   try {
