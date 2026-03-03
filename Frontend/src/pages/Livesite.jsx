@@ -39,7 +39,7 @@ function Livesite() {
       title='Live Site'
       srcDoc={html}
       className='w-screen h-screen border-none'
-      sandbox='allow-scripts allow-forms'
+      sandbox='allow-scripts'
     />
   )
 }
